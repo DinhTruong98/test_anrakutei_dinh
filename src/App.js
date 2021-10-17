@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import Content from "./components/layout/Content";
+import Footer from "./components/layout/Footer";
+import { pageLink } from "./general/constant";
+import Index from "./components/pages/Index";
+import MyList from "./components/pages/MyList";
+import Login from "./components/pages/Login";
+import Register from "./components/pages/Register";
+import NavBar from "./components/layout/NavBar/NavBar";
+import { Link, Switch, Route, BrowserRouter as Router } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <NavBar />
+        <Switch>
+          <Route exact component={Index} path={pageLink.index} />
+          {/* <Route exactly component={Login} pattern="/login" /> */}
+          <Route exact component={MyList} path={pageLink.myList} />
+          <Route exact component={Login} path={pageLink.login} />
+          <Route exact component={Register} path={pageLink.register} />
+          {/* <Route component={Page404} /> */}
+        </Switch>
+      </Router>
+
+      <Footer />
+    </>
   );
 }
 
