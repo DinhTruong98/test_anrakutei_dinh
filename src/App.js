@@ -12,18 +12,19 @@ function App() {
   return (
     <>
       <Router>
-        <NavBar />
         <Switch>
-          <Route exact component={Index} path={pageLink.index} />
-          {/* <Route exactly component={Login} pattern="/login" /> */}
-          <Route exact component={MyList} path={pageLink.myList} />
           <Route exact component={Login} path={pageLink.login} />
           <Route exact component={Register} path={pageLink.register} />
-          {/* <Route component={Page404} /> */}
+          <div>
+            <NavBar />
+            <Route exact component={Index} path={pageLink.index} />
+            {/* <Route exactly component={Login} pattern="/login" /> */}
+            <Route exact component={MyList} path={pageLink.myList} />
+            {/* <Route component={Page404} /> */}
+            <Footer />
+          </div>
         </Switch>
       </Router>
-
-      <Footer />
     </>
   );
 }
