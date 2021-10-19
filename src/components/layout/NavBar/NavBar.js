@@ -1,8 +1,7 @@
-import { Home, Star } from "@mui/icons-material";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import { Home, LoginOutlined, LogoutRounded, Star } from "@mui/icons-material";
 import ExploreIcon from "@mui/icons-material/Explore";
 import MenuIcon from "@mui/icons-material/Menu";
-import StoreSharpIcon from "@mui/icons-material/StoreSharp";
+import { Button } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -13,10 +12,13 @@ import { Box } from "@mui/system";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { pageLink } from "../../../general/constant";
+import { useUserManager } from "../../../general/hook";
 import Logo from "../../logo/Logo";
 import NavItem from "./NavItem";
 
 export default function NavBar() {
+  let { isLoggedIn, userInfo, logout } = useUserManager();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -40,28 +42,6 @@ export default function NavBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
@@ -76,7 +56,6 @@ export default function NavBar() {
         vertical: "top",
         horizontal: "right",
       }}
-      // style={{ backgroundColor: "black" }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
@@ -87,6 +66,21 @@ export default function NavBar() {
           marginBottom: "-8px",
         }}
       >
+        {isLoggedIn && (
+          <>
+            <Box
+              sx={{
+                p: 1,
+                textAlign: "center",
+                fontSize: "18px",
+                border: "1px solid white",
+                borderRadius: "10px",
+              }}
+            >
+              {userInfo.email}
+            </Box>
+          </>
+        )}
         <MenuItem onClick={closePopup}>
           <NavItem
             activeOnlyWhenExact={true}
@@ -96,22 +90,38 @@ export default function NavBar() {
           />
         </MenuItem>
         <MenuItem onClick={closePopup}>
-          <NavItem
-            icon={<Star />}
-            to={pageLink.myList}
-            label="My List"
-          />
+          <NavItem icon={<Star />} to={pageLink.myList} label="My List" />
         </MenuItem>
-        <MenuItem onClick={closePopup}>
-          <NavItem icon={<ExploreIcon />} to={pageLink.login} label="Login" />
-        </MenuItem>
-        <MenuItem onClick={closePopup}>
-          <NavItem
-            icon={<ExploreIcon />}
-            to={pageLink.register}
-            label="Register"
-          />
-        </MenuItem>
+        {!isLoggedIn && (
+          <>
+            <MenuItem onClick={closePopup}>
+              <NavItem
+                icon={<LoginOutlined />}
+                to={pageLink.login}
+                label="Login"
+              />
+            </MenuItem>
+            <MenuItem onClick={closePopup}>
+              <NavItem
+                icon={<ExploreIcon />}
+                to={pageLink.register}
+                label="Register"
+              />
+            </MenuItem>
+          </>
+        )}
+        {isLoggedIn && (
+          <>
+            <MenuItem
+              onClick={closePopup}
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              <Button fullWidth variant="outlined" onClick={() => logout()}>
+                Logout <LogoutRounded />
+              </Button>
+            </MenuItem>
+          </>
+        )}
       </div>
     </Menu>
   );
@@ -149,22 +159,40 @@ export default function NavBar() {
               to="/"
               label="All University"
             />
-            <NavItem
-              icon={<Star />}
-              to={pageLink.myList}
-              label="My list"
-            />
-            <NavItem icon={<ExploreIcon />} to={pageLink.login} label="Login" />
-            <NavItem
-              icon={<ExploreIcon />}
-              to={pageLink.register}
-              label="Register"
-            />
+            <NavItem icon={<Star />} to={pageLink.myList} label="My list" />
+            {!isLoggedIn && (
+              <>
+                <NavItem
+                  icon={<LoginOutlined />}
+                  to={pageLink.login}
+                  label="Login"
+                />
+                <NavItem
+                  icon={<ExploreIcon />}
+                  to={pageLink.register}
+                  label="Register"
+                />
+              </>
+            )}
             {/* <NavItem to={pageLink.gift} label="gift" /> */}
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           {/* <ConnectWalletButton /> */}
 
+          {isLoggedIn && (
+            <Box
+              sx={{
+                display: { mobile: "none", tablet: "none", desktop: "flex" },
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div style={{ paddingRight: "5px" }}>{userInfo.email}</div>
+              <Button onClick={() => logout()} variant="outlined">
+                Logout
+              </Button>
+            </Box>
+          )}
           <Box
             sx={{
               display: { mobile: "flex", tablet: "flex", desktop: "none" },

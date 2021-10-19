@@ -2,10 +2,11 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { Link, useRouteMatch } from "react-router-dom";
+import { pageLink } from "../../../general/constant";
 
 export default function NavItem({ label, to, activeOnlyWhenExact, icon }) {
   let match = useRouteMatch({
-    path: to,
+    path: to || pageLink.index,
     exact: activeOnlyWhenExact,
   });
 
@@ -29,18 +30,7 @@ export default function NavItem({ label, to, activeOnlyWhenExact, icon }) {
             {label}
           </Box>
         </Typography>
-        {/* <Box sx={{ display: "flex", justifyContent: "center", pb: 1 }}>
-          <Typography
-            // variant="h6"
-            noWrap
-            fontWeight={"bold"}
-            component="div"
-            color={match ? "primary" : "transparent"}
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            ______
-          </Typography>
-        </Box> */}
+      
       </Link>
     </div>
   );

@@ -4,9 +4,17 @@ import { Box } from "@mui/system";
 import React from "react";
 import { Link } from "react-router-dom";
 import { pageLink } from "../../general/constant";
-import Logo from "../logo/Logo";
+import {
+  useChangeRoute,
+  useTextInput,
+  useUserManager,
+} from "../../general/hook";
 
-export default function login() {
+export default function Login() {
+  let { login } = useUserManager();
+  let { goToPage } = useChangeRoute();
+  let email = useTextInput();
+  let password = useTextInput();
   return (
     <>
       <Box
@@ -24,7 +32,7 @@ export default function login() {
             p: { desktop: 2, mobile: 1 },
             bgcolor: "cardground.main",
             // height: { mobile: "80vh", desktop: "600px" },
-            width: { mobile: "90vw", desktop: "400px" },
+            width: { mobile: "90vw", desktop: "400px", tablet: "400px" },
             // display: "flex",
             // alignItems: "center",
             // justifyContent: "center",
@@ -48,12 +56,32 @@ export default function login() {
             <h6>Welcome back</h6>
           </Box>
           <Box sx={{ p: 1 }}>
-            <TextField label="Email" variant="outlined" fullWidth placeholder="Email" />
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              placeholder="Email"
+              {...email}
+            />
             <Box sx={{ p: 1 }} />
-            <TextField label="Password" type="password" variant="outlined" fullWidth placeholder="Password" />
+            <TextField
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              placeholder="Password"
+              {...password}
+            />
             <Box sx={{ p: 1 }} />
             <div style={{ float: "right" }}>
-              <Button variant="contained">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  login({ email: email.value, password: password.value }, () =>
+                    goToPage(pageLink.index)
+                  );
+                }}
+              >
                 Login <ArrowRight />
               </Button>
             </div>

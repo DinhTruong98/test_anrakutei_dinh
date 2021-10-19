@@ -5,8 +5,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { pageLink } from "../../general/constant";
 import Logo from "../logo/Logo";
+import {
+  useUserManager,
+  useTextInput,
+  useChangeRoute,
+} from "../../general/hook";
+import { isEmail } from "validator";
+import { errorAlert } from "../../general/alert";
 
 export default function Register() {
+  let { register } = useUserManager();
+  let { goToPage } = useChangeRoute();
+  let email = useTextInput();
+  let password = useTextInput();
+  let repassword = useTextInput();
   return (
     <>
       <Box
@@ -53,6 +65,7 @@ export default function Register() {
               variant="outlined"
               fullWidth
               placeholder="Email"
+              {...email}
             />
             <Box sx={{ p: 1 }} />
             <TextField
@@ -61,6 +74,7 @@ export default function Register() {
               variant="outlined"
               fullWidth
               placeholder="Password"
+              {...password}
             />
             <Box sx={{ p: 1 }} />
 
@@ -68,12 +82,31 @@ export default function Register() {
               label="Re-enter password"
               type="password"
               variant="outlined"
+              {...repassword}
               fullWidth
               placeholder="Password"
             />
             <Box sx={{ p: 1 }} />
             <div style={{ float: "right" }}>
-              <Button variant="contained">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (password.value !== repassword.value) {
+                    errorAlert(
+                      "Password and RePassword must be the same!",
+                      "OK",
+                      () => {}
+                    );
+                  } else if (!isEmail(email.value)) {
+                    errorAlert("Wrong email format!", "OK", () => {});
+                  } else {
+                    register(
+                      { email: email.value, password: password.value },
+                      () => goToPage(pageLink.index)
+                    );
+                  }
+                }}
+              >
                 Register <ArrowRight />
               </Button>
             </div>
