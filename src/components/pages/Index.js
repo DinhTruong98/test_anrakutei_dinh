@@ -5,24 +5,30 @@ import React, { useEffect, useState } from "react";
 import { getData } from "../../general/api";
 
 export default function Index() {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [totalPage, setTotalPage] = useState(0);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [searchString, setSearchString] = useState("");
   const [unies, setUnies] = useState([]);
 
   useEffect(() => {
-    getData(`/getUniversity?page=${pageIndex}`, (data) => {
-      setUnies(data.data);
-      setTotalPage(data.totalPages);
-    });
-  }, [pageIndex]);
-
-//   useEffect(() => {
-//     getData(`/searchUniversityByName?string=${searchString}`, (data) => {
-//       setUnies(data.data);
-//       setTotalPage(data.totalPages);
-//     });
-//   }, [searchString]);
+    if (pageIndex > totalPage) {
+      setPageIndex(1);
+    }
+    if (searchString != "") {
+      getData(
+        `/searchUniversityByName?string=${searchString}&page=${pageIndex}`,
+        (data) => {
+          setUnies(data.data);
+          setTotalPage(data.totalPages);
+        }
+      );
+    } else {
+      getData(`/getUniversity?page=${pageIndex}`, (data) => {
+        setUnies(data.data);
+        setTotalPage(data.totalPages);
+      });
+    }
+  }, [pageIndex, searchString]);
 
   function onChange(e) {
     setSearchString(e.target.value);
@@ -45,7 +51,7 @@ export default function Index() {
       ))}
       <Button
         onClick={() => {
-          if (pageIndex - 1 >= 0) setPageIndex(pageIndex - 1);
+          if (pageIndex - 1 > 0) setPageIndex(pageIndex - 1);
         }}
       >
         Back
